@@ -1,0 +1,267 @@
+app:
+  description: 基于模拟课程资料的 AI 助教原型，用于演示知识库检索与课程问答。
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: advanced-chat
+  name: 食品理化检验 AI 助教
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/tongyi:0.2.15@1df8bd27d67c149e6db3c210830ef6e3857c5a9df5e8edbe9e785b995f337ef5
+    version: null
+kind: app
+version: 0.7.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 20
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: '你好！我是《食品理化检验》课程 AI 助教演示版。
+
+      我可以根据已上传的模拟课程资料，回答学习安排、作业要求、答疑时间和课前准备等问题，并提供资料引用。资料没有说明的内容，我会明确告知。
+
+      你可以试着问：
+
+      • 单元作业什么时候交？文件有什么要求？
+
+      • 老师每周什么时候答疑，在哪里？
+
+      • 实验课前需要完成哪些学习准备？
+
+      本应用使用模拟资料，仅供功能演示，不代表真实课程规定。'
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      selected: false
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: knowledge-retrieval
+      id: 1788870749727-source-1788872621083-target
+      source: '1788870749727'
+      sourceHandle: source
+      target: '1788872621083'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: 1788872621083-source-llm-target
+      source: '1788872621083'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables: []
+      height: 73
+      id: '1788870749727'
+      position:
+        x: 1098.9447762659315
+        y: 80.17413627465932
+      positionAbsolute:
+        x: 1098.9447762659315
+        y: 80.17413627465932
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1788872621083'
+          - result
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            '
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-r1
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: b60c4e7b-5159-4f1a-aa23-57b401a52ba7
+          role: system
+          text: '你是《食品理化检验》课程的 AI 助教，当前应用为演示原型。
+
+
+            职责：
+
+            帮助学生理解课程资料，回答课程安排、学习要求和知识点相关问题。
+
+
+            回答规则：
+
+            1. 课程事实和专业知识必须以提供的课程资料为依据。
+
+            2. 如果没有提供资料，或资料不足以回答，明确说明：“当前课程资料中没有足够信息，暂时无法确认。”可以建议学生补充哪些资料。
+
+            3. 不得编造课程安排、实验参数、评分标准、教材出处或引用。
+
+            4. 解释知识点时，先简要说明概念，再根据资料举例；资料没有例子时不要编造。
+
+            5. 模拟资料中的信息只能作为演示使用，不得说成真实课程规定。
+
+            6. 对问候和功能介绍，可以直接简短回应；对无关问题，礼貌引导回课程学习。
+
+            7. 使用中文，语气耐心、清楚，优先简洁回答。
+
+            8. 严格区分“资料未说明”和“明确没有限制”。资料未提及某项规定时，应回答“资料未说明，暂时无法确认”，不得推断为无限次数、没有要求或默认允许。
+
+            以下是本次检索到的课程资料，请依据其中与问题相关的内容回答：
+
+            {{#context#}}'
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          enabled: false
+      height: 88
+      id: llm
+      position:
+        x: 1537.3091823890875
+        y: 376.84427793327546
+      positionAbsolute:
+        x: 1537.3091823890875
+        y: 376.84427793327546
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        answer: '{{#llm.text#}}'
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 102
+      id: answer
+      position:
+        x: 1759.6
+        y: 447.0314331330208
+      positionAbsolute:
+        x: 1759.6
+        y: 447.0314331330208
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    - data:
+        dataset_ids:
+        - REDACTED
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: reranking_model
+          reranking_model:
+            model: qwen3-rerank
+            provider: langgenius/tongyi/tongyi
+          top_k: 4
+        query_attachment_selector: []
+        query_variable_selector:
+        - '1788870749727'
+        - sys.query
+        retrieval_mode: multiple
+        selected: false
+        title: 知识检索
+        type: knowledge-retrieval
+      height: 90
+      id: '1788872621083'
+      position:
+        x: 1364.255583901661
+        y: 251.83556128857117
+      positionAbsolute:
+        x: 1364.255583901661
+        y: 251.83556128857117
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 0
+    viewport:
+      x: -639.2332884997529
+      y: 118.42179208370851
+      zoom: 0.6597539553864474
+  rag_pipeline_variables: []
